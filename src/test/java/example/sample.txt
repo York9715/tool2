@@ -1,3 +1,26 @@
+desc eventfield;
+ FIELDID                                   NOT NULL NUMBER(9)                    
+ EVENTID                                   NOT NULL NUMBER(9)         EVENTID=440            
+ FIELDNAME                                 NOT NULL VARCHAR2(255)               
+ FIELDTYPE                                 NOT NULL VARCHAR2(50)                
+ MANDATORY                                 NOT NULL CHAR(1)                     
+ ERRORMESSAGE                                       VARCHAR2(255)               
+ DISPLAYORDER                              NOT NULL NUMBER(9)                   
+ MAXPERREGISTRANT                                   NUMBER(9)                   
+ MAXPEREVENT                                        NUMBER(9)                   
+ OVERCAPACITYMESSAGE                                VARCHAR2(255)
+
+desc eventregform:
+
+ REGFORMID                                 NOT NULL NUMBER(9)                   
+ REGISTRATIONID                            NOT NULL NUMBER(9)                   
+ FIELDID                                   NOT NULL NUMBER(8)                   
+ STRINGVALUE                                        VARCHAR2(4000)              
+ CLOBVALUE                                          CLOB
+ 
+ REGISTRATIONID=1874 
+ FIELDID=100 OK
+ 
 package com.edgeip.ezRecruit.entiry;
 
 import java.sql.Connection;
