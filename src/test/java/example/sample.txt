@@ -1,0 +1,396 @@
+package com.edgeip.ezRecruit.entiry;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import org.apache.log4j.Logger;
+
+@Entity
+public class EventRegForm2 implements java.io.Serializable {
+
+	private static final long serialVersionUID = 2034850149819956005L;
+
+	@Column(name = "REGFORMID")
+	private long REGFORMID;
+	@Column(name = "REGISTRATIONID")
+	private long REGISTRATIONID;
+	@Column(name = "FIELDID")
+	private long FIELDID;
+	@Column(name = "STRINGVALUE")
+	private String STRINGVALUE;
+	@Column(name = "CLOBVALUE")
+	private byte[] CLOBVALUE;
+
+	private boolean bREGFORMID;
+	private boolean bREGISTRATIONID;
+	private boolean bFIELDID;
+	private boolean bSTRINGVALUE;
+	private boolean bCLOBVALUE;
+
+	private String WHERE;
+	//private String Sel;
+	//private String Del;
+	private ArrayList<EventRegForm2> rsltvec_;
+
+	private Connection conn = null;
+	private Statement stmt;
+
+	final static Logger logger = Logger.getLogger(EventRegForm2.class);
+
+	public EventRegForm2() {
+		init();
+	}
+
+	public EventRegForm2(Connection conn) {
+		init();
+		setConnection(conn);
+	}
+
+	/**
+	 * Set Database Connection
+	 * 
+	 * @param conn
+	 *            the database Connection.
+	 * @return TRUE if connection is available
+	 */
+	public boolean setConnection(Connection conn)  {
+		if (conn == null)
+			return false;
+		this.conn = conn;
+		try {
+			stmt = this.conn.createStatement();
+		} catch (Exception e) {
+			stmt = null;
+			logger.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	public final void setWhere(String where_) {
+		if (where_ == null) {
+			WHERE = "";
+		} else {
+			WHERE = " WHERE " + where_;
+		}
+	}
+	
+	private final String getWhere() {
+		return WHERE;
+	}
+	
+	private final String getSelSQL() {
+		String Sel = "SELECT REGFORMID,REGISTRATIONID,FIELDID,STRINGVALUE,CLOBVALUE FROM EventRegForm2";
+		return Sel + getWhere();
+	}
+
+	// process insert
+	public final boolean execInsert() throws SQLException {
+		if ((conn == null) || (stmt == null))
+			return false;
+		try {
+			String insertSql=getInsSQL();
+			logger.debug(insertSql);
+			stmt.executeUpdate(insertSql);
+			conn.commit();
+		} catch (SQLException e) {
+			logger.info(e);
+			conn.rollback();
+			throw e;
+		}
+		return true;
+	}
+	
+	private final String getDelSQL() {
+		return "Delete From EventRegForm2 " + getWhere();
+	}
+	
+	public final boolean execUpdate(String where_) throws SQLException {
+		if ((conn == null) || (stmt == null))
+			return false;
+
+		StringBuffer sql = new StringBuffer("");
+		setWhere(where_);
+		logger.info("execUpdate:sql=" + getUpdSQL());
+		// process update
+		try {
+			stmt.executeUpdate(getUpdSQL());
+			conn.commit();
+		} catch (Exception e) {
+			conn.rollback();
+			logger.error(e);
+			
+			throw e;
+		}
+		return true;
+	}
+	
+	private final String getUpdSQL() {
+		StringBuffer sql_ = new StringBuffer("UPDATE EventRegForm2 SET ");
+		if (bREGFORMID) {
+			sql_.append("REGFORMID=" + REGFORMID+ ",");
+		}
+
+		if (bREGISTRATIONID) {
+			sql_.append("REGISTRATIONID=" + REGISTRATIONID+ ",");
+		}
+
+		if (bFIELDID) {
+			sql_.append("FIELDID=" + FIELDID+ ",");
+		}
+
+		if (bSTRINGVALUE) {
+			sql_.append("STRINGVALUE='" + STRINGVALUE+ "',");
+		}
+		if (bCLOBVALUE) {
+			sql_.append("CLOBVALUE='" + CLOBVALUE+ "',");
+		}
+		
+		String myUpd = sql_.toString();
+		if ((myUpd.substring(myUpd.length() - 1, myUpd.length() - 0))
+				.equals(",")) {
+			myUpd = myUpd.substring(0, myUpd.length() - 1);
+		}
+
+		return myUpd + ")";
+	
+	}
+	
+	public final boolean execDelete(String where_) throws SQLException {
+		if ((conn == null) || (stmt == null))
+			return false;
+		if (where_.equals(""))
+			where_ = " 0 = 0 ";
+		setWhere(where_);
+
+		// process delete
+		String mysql = getDelSQL();
+		logger.info("getDelSQL :" + mysql);
+		try {
+			stmt.executeUpdate(mysql);
+			conn.commit();
+		} catch (Exception e) {
+			logger.info("execDelete :" + e.getMessage());
+			logger.error(e);
+			conn.rollback();
+			throw e;
+		}
+		return true;
+	}
+	
+	private final String getInsSQL() {
+		StringBuffer sql_ = new StringBuffer("INSERT INTO EventRegForm2(");
+		StringBuffer sqlValues = new StringBuffer("");
+		if (bREGFORMID) {
+			sql_.append("REGFORMID,");
+			sqlValues.append(String.valueOf(REGFORMID) + ",");
+		}
+
+		if (bREGISTRATIONID) {
+			sql_.append("REGISTRATIONID,");
+			sqlValues.append(String.valueOf(REGISTRATIONID) + ",");
+		}
+
+		if (bFIELDID) {
+			sql_.append("FIELDID,");
+			sqlValues.append(String.valueOf(FIELDID) + ",");
+		}
+		if (bSTRINGVALUE) {
+			sql_.append("STRINGVALUE,");
+			sqlValues.append("'" + bSTRINGVALUE + "',");
+		}
+		if (bCLOBVALUE) {
+			sql_.append("CLOBVALUE,");
+			sqlValues.append("'" + CLOBVALUE.toString() + "',");
+		}
+		
+		String myIns = sql_.toString();
+		if ((myIns.substring(myIns.length() - 1, myIns.length() - 0))
+				.equals(",")) {
+			myIns = myIns.substring(0, myIns.length() - 1);
+		}
+
+		String myValue = sqlValues.toString();
+		if ((myValue.substring(myValue.length() - 1, myValue.length() - 0))
+				.equals(",")) {
+			myValue = myValue.substring(0, myValue.length() - 1);
+		}
+
+		return myIns + " ) values(" + myValue + ")";
+	}
+	
+	
+	public final ArrayList<EventRegForm2> execSelect(String where_) throws SQLException {
+		where_ = where_.trim();
+		if (where_.equals(""))
+			where_ = " 0 = 0";
+
+		if ((conn == null) || (stmt == null))
+			return null;
+		ResultSet rs1;
+		setWhere(where_);
+
+		logger.info("setWhere(where_)=" + where_);
+		logger.info("getWhere(where_)=" + getWhere());
+
+		// exec select statement
+		logger.info("getSelSQL()=" + getSelSQL());
+		try {
+			rs1 = stmt.executeQuery(getSelSQL());
+		} catch (Exception e) {
+			System.out.println("exeSelect1:" + e.getMessage());
+			return null;
+		}
+		try {
+			execSetResult(rs1);
+			if (rs1 != null) {
+				rs1.close();
+			}
+		} catch (Exception e) {
+			logger.error(e);
+			logger.error("exeSelect2:" + e.getMessage());
+			throw e;
+		}
+		
+		return rsltvec_;
+	}
+	
+	
+	private void execSetResult(ResultSet rs_) throws SQLException {
+		rsltvec_ = new ArrayList<EventRegForm2>();
+		try {
+			while (rs_.next()) {
+				EventRegForm2 rslt_EventRegForm = new EventRegForm2();
+				rslt_EventRegForm.setREGFORMID(rs_.getLong(1));
+				rslt_EventRegForm.setREGISTRATIONID(rs_.getLong(2));
+				rslt_EventRegForm.setFIELDID(rs_.getLong(3));
+				rslt_EventRegForm.setSTRINGVALUE(rs_.getString(4));
+				rslt_EventRegForm.setCLOBVALUE((byte[])rs_.getObject(5));
+				rsltvec_.add(rslt_EventRegForm);
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+	}	
+	
+	private void init() {
+		REGFORMID = 0;
+		REGISTRATIONID = 0;
+		FIELDID = 0;
+		STRINGVALUE = null;
+		CLOBVALUE = null;
+		
+		bREGFORMID = false;
+		bREGISTRATIONID = false;
+		bFIELDID = false;
+		bSTRINGVALUE = false;
+		bCLOBVALUE = false;
+
+		WHERE = "";
+		//Sel = "SELECT REGFORMID,REGISTRATIONID,FIELDID,STRINGVALUE,CLOBVALUE FROM EventRegForm2";
+		//Ins = "INSERT INTO EventRegForm2(REGFORMID,REGISTRATIONID,FIELDID,STRINGVALUE,CLOBVALUE) VALUES(";
+		//Upd = "UPDATE EventRegForm2 SET ";
+		//Del = "DELETE FROM EventRegForm2";
+		//rcnt = 0;		
+	}
+	
+	/**
+	 * @return the rEGFORMID
+	 */
+	public long getREGFORMID() {
+		return REGFORMID;
+	}
+
+	/**
+	 * @param rEGFORMID
+	 *            the rEGFORMID to set
+	 */
+	public void setREGFORMID(long rEGFORMID) {
+		bREGFORMID = true;
+		REGFORMID = rEGFORMID;
+	}
+
+	/**
+	 * @return the rEGISTRATIONID
+	 */
+	public long getREGISTRATIONID() {
+		return REGISTRATIONID;
+	}
+
+	/**
+	 * @param rEGISTRATIONID
+	 *            the rEGISTRATIONID to set
+	 */
+	public void setREGISTRATIONID(long rEGISTRATIONID) {
+		bREGISTRATIONID = true;
+		REGISTRATIONID = rEGISTRATIONID;
+	}
+
+	/**
+	 * @return the fIELDID
+	 */
+	public long getFIELDID() {
+		return FIELDID;
+	}
+
+	/**
+	 * @param fIELDID
+	 *            the fIELDID to set
+	 */
+	public void setFIELDID(long fIELDID) {
+		bFIELDID = true;
+		FIELDID = fIELDID;
+	}
+
+	/**
+	 * @return the sTRINGVALUE
+	 */
+	public String getSTRINGVALUE() {
+		return STRINGVALUE;
+	}
+
+	/**
+	 * @param sTRINGVALUE
+	 *            the sTRINGVALUE to set
+	 */
+	public void setSTRINGVALUE(String sTRINGVALUE) {
+		bSTRINGVALUE = true;
+		STRINGVALUE = sTRINGVALUE;
+	}
+
+	/**
+	 * @return the cLOBVALUE
+	 */
+	public byte[] getCLOBVALUE() {
+		return CLOBVALUE;
+	}
+
+
+	/**
+	 * @param cLOBVALUE
+	 *            the cLOBVALUE to set
+	 */
+	public void setCLOBVALUE(byte[] cLOBVALUE) {
+		bCLOBVALUE = true;
+		CLOBVALUE = cLOBVALUE;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "EventRegForm2 [REGFORMID=" + REGFORMID + ", REGISTRATIONID=" + REGISTRATIONID + ", FIELDID=" + FIELDID
+				+ ", STRINGVALUE=" + STRINGVALUE + ", CLOBVALUE=" + Arrays.toString(CLOBVALUE) + "]";
+	}
+
+}
