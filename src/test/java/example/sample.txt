@@ -4,7 +4,8 @@ desc eventfield;
  FIELDNAME                                 NOT NULL VARCHAR2(255)               
  FIELDTYPE                                 NOT NULL VARCHAR2(50)                
  MANDATORY                                 NOT NULL CHAR(1)                     
- ERRORMESSAGE                                       VARCHAR2(255)               
+ ERRORMESSAGE                                       VARCHAR2(255)         
+ --added comment1 in branch1
  DISPLAYORDER                              NOT NULL NUMBER(9)                   
  MAXPERREGISTRANT                                   NUMBER(9)                   
  MAXPEREVENT                                        NUMBER(9)                   
